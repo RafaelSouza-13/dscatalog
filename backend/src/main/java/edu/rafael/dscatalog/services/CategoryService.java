@@ -3,10 +3,13 @@ package edu.rafael.dscatalog.services;
 import edu.rafael.dscatalog.dto.CategoryDTO;
 import edu.rafael.dscatalog.entities.Category;
 import edu.rafael.dscatalog.repositories.CategoryRepository;
+import edu.rafael.dscatalog.services.exceptions.DatabaseException;
 import edu.rafael.dscatalog.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -47,6 +50,18 @@ public class CategoryService {
         }catch (EntityNotFoundException e){
             throw new ResourceNotFoundException("Id: "+id+" não encontrado");
         }
+    }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Categoria não encontrado");
+        }
+        try {
+            categoryRepository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Falha de integridade referencial");
+        }
     }
 }

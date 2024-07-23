@@ -1,5 +1,6 @@
 package edu.rafael.dscatalog.resources.exceptions;
 
+import edu.rafael.dscatalog.services.exceptions.DatabaseException;
 import edu.rafael.dscatalog.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -14,12 +15,24 @@ public class ResourceExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<StandardError> entityNotFound(ResourceNotFoundException e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.NOT_FOUND;
         StandardError error = new StandardError(
                 Instant.now(),
-                HttpStatus.NOT_FOUND.value(),
+                status.value(),
                 "Recurso não encontrado",
                 e.getMessage(),
                 request.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(error);
+    }
+
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<StandardError> database(DatabaseException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError(Instant.now(),
+                status.value(),
+                "Exceção no banco de dados",
+                e.getMessage(),
+                request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
 }
