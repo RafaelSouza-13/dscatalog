@@ -33,7 +33,11 @@ public class Product {
     }
 
     public Product(Long id, String name, String description, Double price, String imgUrl, Instant date) {
+        this(name, description, price, imgUrl, date);
         this.id = id;
+    }
+
+    public Product(String name, String description, Double price, String imgUrl, Instant date) {
         this.name = name;
         this.description = description;
         this.price = price;
