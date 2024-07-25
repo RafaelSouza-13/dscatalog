@@ -14,8 +14,15 @@ public class Factory {
         return product;
     }
 
+    public static Product productReturn(){
+        Product product = new Product(1L, "PS5", "The new generation PS5 video game", 600.0, "", Instant.now());
+        product.getCategories().add(new Category(1L, "Eletrônicos"));
+        return product;
+    }
+
     public static ProductDTO createProductDTO(){
         Product product = createProduct();
+        product.setId(1L);
         return new ProductDTO(product, product.getCategories());
     }
 }
