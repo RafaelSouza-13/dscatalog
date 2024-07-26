@@ -62,7 +62,7 @@ public class ProdutoResourcTests {
     @Test
     public void insertShouldReturnCreatedProductDTOWhenIdExists() throws Exception{
         String jsonBody = objectMapper.writeValueAsString(productDTO);
-        ResultActions result = mockMvc.perform(post("/products/").
+        ResultActions result = mockMvc.perform(post("/products").
                 content(jsonBody).
                 contentType(MediaType.APPLICATION_JSON).
                 accept(MediaType.APPLICATION_JSON));
@@ -106,7 +106,7 @@ public class ProdutoResourcTests {
 
     @Test
     public void findAllShouldReturnPage() throws Exception{
-        ResultActions result = mockMvc.perform(get("/products/").
+        ResultActions result = mockMvc.perform(get("/products").
                 accept(MediaType.APPLICATION_JSON));
         result.andExpect(status().isOk());
 

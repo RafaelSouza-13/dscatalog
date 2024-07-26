@@ -1,6 +1,5 @@
 package edu.rafael.dscatalog.repositories;
 
-import edu.rafael.dscatalog.entities.Category;
 import edu.rafael.dscatalog.entities.Product;
 import edu.rafael.dscatalog.tests.Factory;
 import org.junit.jupiter.api.Assertions;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.time.Instant;
 import java.util.Optional;
 
 @DataJpaTest
