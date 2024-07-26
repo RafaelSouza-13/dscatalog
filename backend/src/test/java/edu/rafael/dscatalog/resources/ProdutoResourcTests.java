@@ -3,6 +3,7 @@ package edu.rafael.dscatalog.resources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.rafael.dscatalog.dto.ProductDTO;
 import edu.rafael.dscatalog.services.ProductService;
+import edu.rafael.dscatalog.services.exceptions.DatabaseException;
 import edu.rafael.dscatalog.services.exceptions.ResourceNotFoundException;
 import edu.rafael.dscatalog.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,11 +36,13 @@ public class ProdutoResourcTests {
     private PageImpl<ProductDTO> page;
     private Long existId;
     private Long nonExistId;
+    private Long dependentId;
 
     @BeforeEach
     void setUp(){
         existId = 1L;
         nonExistId = 1000L;
+        dependentId = 3L;
         productDTO = Factory.createProductDTO();
         page = new PageImpl<>(List.of(productDTO));
         Mockito.when(service.findAllPaged(ArgumentMatchers.any())).thenReturn(page);
@@ -48,6 +51,34 @@ public class ProdutoResourcTests {
 
         Mockito.when(service.update(ArgumentMatchers.eq(existId), ArgumentMatchers.any())).thenReturn(productDTO);
         Mockito.when(service.update(ArgumentMatchers.eq(nonExistId), ArgumentMatchers.any())).thenThrow(ResourceNotFoundException.class);
+
+        Mockito.doNothing().when(service).delete(existId);
+        Mockito.doThrow(ResourceNotFoundException.class).when(service).delete(nonExistId);
+        Mockito.doThrow(DatabaseException.class).when(service).delete(dependentId);
+
+        Mockito.doReturn(productDTO).when(service).insert(ArgumentMatchers.any());
+    }
+
+    @Test
+    public void insertShouldReturnCreatedProductDTOWhenIdExists() throws Exception{
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+        ResultActions result = mockMvc.perform(post("/products/").
+                content(jsonBody).
+                contentType(MediaType.APPLICATION_JSON).
+                accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isCreated());
+    }
+
+    @Test
+    public void deleteShouldReturnNoContentWhenIdExists() throws Exception{
+        ResultActions result = mockMvc.perform(delete("/products/{id}", existId));
+        result.andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteShouldReturnNotFoundWhenIdDoesNotExists() throws Exception{
+        ResultActions result = mockMvc.perform(get("/products/{id}", nonExistId));
+        result.andExpect(status().isNotFound());
     }
 
     @Test
@@ -64,8 +95,13 @@ public class ProdutoResourcTests {
     }
 
     @Test
-    public void updateShouldReturnNotFoundWhenIdDoesNotExist(){
-
+    public void updateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception{
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+        ResultActions result = mockMvc.perform(put("/products/{id}", nonExistId).
+                content(jsonBody).
+                contentType(MediaType.APPLICATION_JSON).
+                accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isNotFound());
     }
 
     @Test
