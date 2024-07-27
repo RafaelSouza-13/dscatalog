@@ -4,6 +4,7 @@ package edu.rafael.dscatalog.resources;
 import edu.rafael.dscatalog.dto.UserDTO;
 import edu.rafael.dscatalog.dto.UserInsertDTO;
 import edu.rafael.dscatalog.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ public class UserResource {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO dtoInsert){
+    public ResponseEntity<UserDTO> insert(@Valid  @RequestBody UserInsertDTO dtoInsert){
         UserDTO dto = userService.insert(dtoInsert);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
                 buildAndExpand(dto.getId()).toUri();
@@ -40,7 +41,7 @@ public class UserResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO dto){
+    public ResponseEntity<UserDTO> update(@Valid @PathVariable Long id, @RequestBody UserDTO dto){
         dto = userService.update(id, dto);
         return ResponseEntity.ok(dto);
     }

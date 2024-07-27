@@ -2,20 +2,26 @@ package edu.rafael.dscatalog.dto;
 
 import edu.rafael.dscatalog.entities.Category;
 import edu.rafael.dscatalog.entities.Product;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ProductDTO {
     private Long id;
+    @Size(min = 5, max = 30, message = "Nome deve ter entre 3 e 30 caracteres")
+    @NotBlank(message = "Campo requerido")
     private String name;
     private String description;
+    @Positive(message = "Preço deve ser positivo")
     private Double price;
     private String imgUrl;
+    @PastOrPresent(message = "Data do produto não pode ser futura")
     private Instant date;
 
     private List<CategoryDTO> categories = new ArrayList<>();
