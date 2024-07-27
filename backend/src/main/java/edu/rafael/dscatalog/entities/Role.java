@@ -1,13 +1,20 @@
 package edu.rafael.dscatalog.entities;
 
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+@Entity
 @Table(name = "tb_role")
 public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String authority;
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users = new HashSet<>();
 
     public Role(){
 
