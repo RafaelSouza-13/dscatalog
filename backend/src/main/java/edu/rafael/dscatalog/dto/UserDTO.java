@@ -1,10 +1,8 @@
 package edu.rafael.dscatalog.dto;
 
-import edu.rafael.dscatalog.entities.Role;
 import edu.rafael.dscatalog.entities.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 
 import java.util.HashSet;
 import java.util.Set;

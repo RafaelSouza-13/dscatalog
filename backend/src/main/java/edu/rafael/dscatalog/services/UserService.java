@@ -3,6 +3,7 @@ package edu.rafael.dscatalog.services;
 import edu.rafael.dscatalog.dto.RoleDTO;
 import edu.rafael.dscatalog.dto.UserDTO;
 import edu.rafael.dscatalog.dto.UserInsertDTO;
+import edu.rafael.dscatalog.dto.UserUpdateDTO;
 import edu.rafael.dscatalog.entities.Role;
 import edu.rafael.dscatalog.entities.User;
 import edu.rafael.dscatalog.repositories.RoleRepository;
@@ -60,7 +61,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO update(Long id, UserDTO dto){
+    public UserDTO update(Long id, UserUpdateDTO dto){
         try{
             User user = userRepository.getReferenceById(id);
             copyDtoToEntity(dto, user);
